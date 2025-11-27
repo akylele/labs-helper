@@ -1,0 +1,52 @@
+-- Таблица пользователей
+CREATE TABLE users (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  last_name TEXT NOT NULL,
+  password TEXT NOT NULL,
+  role TEXT DEFAULT 'student' CHECK (role IN ('student', 'teacher')),
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- Таблица лабораторных работ
+CREATE TABLE submissions (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  user_id UUID REFERENCES users(id) ON DELETE CASCADE,
+  lab_name TEXT NOT NULL,
+  mr_link TEXT NOT NULL,
+  status TEXT DEFAULT 'pending' CHECK (status IN ('pending', 'approved', 'rejected')),
+  submitted_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- Индекс для быстрого поиска по user_id
+CREATE INDEX idx_submissions_user_id ON submissions(user_id);
+
+-- Таблица лабораторных работ (названия)
+CREATE TABLE labs (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  name TEXT NOT NULL UNIQUE,
+  order_num INTEGER DEFAULT 0,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- Индекс для сортировки
+CREATE INDEX idx_labs_order ON labs(order_num);
+
+-- Таблица лабораторных работ (названия)
+CREATE TABLE labs (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  name TEXT NOT NULL UNIQUE,
+  order_num INTEGER DEFAULT 0,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- Добавить колонку lab_id в submissions
+ALTER TABLE submissions ADD COLUMN lab_id UUID REFERENCES labs(id);
+
+-- Индекс
+CREATE INDEX idx_labs_order ON labs(order_num);
+
+-- Удалить старую колонку если есть проблемы
+ALTER TABLE submissions DROP COLUMN IF EXISTS lab_id;
+
+-- Добавить заново с правильным foreign key
+ALTER TABLE submissions ADD COLUMN lab_id UUID REFERENCES labs(id) ON DELETE SET NULL;
