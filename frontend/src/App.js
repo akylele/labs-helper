@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { HashRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import axios from 'axios';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
@@ -10,7 +10,9 @@ import TeacherLabs from './pages/TeacherLabs';
 import TeacherSummary from './pages/TeacherSummary';
 import './App.css';
 
-axios.defaults.baseURL = 'http://localhost:5050/api';
+axios.defaults.baseURL = process.env.NODE_ENV === 'production' 
+  ? 'https://labs-helper.onrender.com/api' 
+  : 'http://localhost:5050/api';
 
 function App() {
   const [user, setUser] = useState(null);
