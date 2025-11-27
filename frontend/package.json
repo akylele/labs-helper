@@ -1,5 +1,6 @@
 {
-  "name": "frontend",
+  "homepage": "https://akylele.github.io/labs-helper",
+  "name": "labs-helper",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
