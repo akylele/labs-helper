@@ -8,7 +8,7 @@ const VALID_STATUSES = ['present', 'absent', 'late'];
 // Вспомогательная функция для форматирования полного имени
 const formatFullName = (user) => {
   if (user.first_name && user.last_name) {
-    return `${user.first_name} ${user.last_name}`;
+    return `${user.last_name} ${user.first_name}`;
   }
   return user.last_name || '';
 };

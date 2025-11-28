@@ -45,10 +45,50 @@ function TeacherExamGradesSummary({ user, onLogout, theme, onToggleTheme }) {
     return map;
   }, [grades]);
 
+  const handleExportPDF = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      const response = await fetch(
+        `${axios.defaults.baseURL}/pdf/exams`,
+        {
+          method: 'GET',
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error('Ошибка генерации PDF');
+      }
+
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `exam_grades_${new Date().toISOString().substring(0, 10)}.pdf`;
+      document.body.appendChild(a);
+      a.click();
+      window.URL.revokeObjectURL(url);
+      document.body.removeChild(a);
+    } catch (error) {
+      console.error('Ошибка выгрузки PDF:', error);
+      alert('Ошибка при выгрузке PDF');
+    }
+  };
+
   return (
     <div className="dashboard">
       <LoaderOverlay visible={loading} text="Загружаем сводку..." />
       <Navigation user={user} onLogout={onLogout} theme={theme} onToggleTheme={onToggleTheme} />
+
+      <section className="add-lab-section">
+        <div className="attendance-header">
+          <button className="btn btn-secondary" onClick={handleExportPDF}>
+            Выгрузить PDF
+          </button>
+        </div>
+      </section>
 
       <section className="summary-section">
         {students.length === 0 ? (

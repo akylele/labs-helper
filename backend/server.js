@@ -10,6 +10,7 @@ const authRoutes = require('./routes/auth');
 const labsRoutes = require('./routes/labs');
 const attendanceRoutes = require('./routes/attendance');
 const gradesRoutes = require('./routes/grades');
+const pdfRoutes = require('./routes/pdf');
 
 const app = express();
 
@@ -35,6 +36,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/submissions', labsRoutes);
 app.use('/api/attendance', attendanceRoutes);
 app.use('/api/grades', gradesRoutes);
+app.use('/api/pdf', pdfRoutes);
 
 // Создание учителя при старте
 const createTeacher = async () => {

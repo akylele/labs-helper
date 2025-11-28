@@ -62,6 +62,38 @@ function TeacherAttendanceSummary({ user, onLogout, theme, onToggleTheme }) {
       month: '2-digit'
     });
 
+  const handleExportPDF = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      const response = await fetch(
+        `${axios.defaults.baseURL}/pdf/attendance?startDate=${startDate}&endDate=${endDate}`,
+        {
+          method: 'GET',
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error('Ошибка генерации PDF');
+      }
+
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `attendance_${startDate}_${endDate}.pdf`;
+      document.body.appendChild(a);
+      a.click();
+      window.URL.revokeObjectURL(url);
+      document.body.removeChild(a);
+    } catch (error) {
+      console.error('Ошибка выгрузки PDF:', error);
+      alert('Ошибка при выгрузке PDF');
+    }
+  };
+
   return (
     <div className="dashboard">
       <LoaderOverlay visible={loading} text="Загружаем сводку..." />
@@ -87,6 +119,9 @@ function TeacherAttendanceSummary({ user, onLogout, theme, onToggleTheme }) {
               min={startDate}
             />
           </div>
+          <button className="btn btn-secondary" onClick={handleExportPDF}>
+            Выгрузить PDF
+          </button>
         </div>
       </section>
 
