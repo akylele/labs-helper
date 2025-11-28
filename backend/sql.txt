@@ -67,6 +67,23 @@ CREATE TABLE attendance (
 CREATE INDEX idx_attendance_date ON attendance (lesson_date);
 CREATE INDEX idx_attendance_user ON attendance (user_id);
 
+-- Таблица оценок
+CREATE TABLE grades (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  grade_type TEXT NOT NULL CHECK (grade_type IN ('lesson', 'exam')),
+  grade_value SMALLINT NOT NULL CHECK (grade_value BETWEEN 0 AND 100),
+  lesson_date DATE,
+  exam_name TEXT,
+  comment TEXT,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  UNIQUE (user_id, lesson_date, grade_type),
+  UNIQUE (user_id, exam_name, grade_type)
+);
+
+CREATE INDEX idx_grades_user_type ON grades (user_id, grade_type);
+CREATE INDEX idx_grades_exam_name ON grades (exam_name) WHERE grade_type = 'exam';
+
 -- Пример массового добавления студентов
 INSERT INTO users (last_name, password, role)
 VALUES

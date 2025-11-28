@@ -5,10 +5,15 @@ import LoginPage from './pages/LoginPage';
 import StudentDashboard from './pages/StudentDashboard';
 import StudentSummary from './pages/StudentSummary';
 import StudentAttendance from './pages/StudentAttendance';
+import StudentLessonGrades from './pages/StudentLessonGrades';
+import StudentExamGrades from './pages/StudentExamGrades';
 import TeacherDashboard from './pages/TeacherDashboard';
 import TeacherLabs from './pages/TeacherLabs';
 import TeacherSummary from './pages/TeacherSummary';
 import TeacherAttendance from './pages/TeacherAttendance';
+import TeacherAttendanceSummary from './pages/TeacherAttendanceSummary';
+import TeacherLessonGrades from './pages/TeacherLessonGrades';
+import TeacherExamGrades from './pages/TeacherExamGrades';
 import './App.css';
 
 axios.defaults.baseURL = 'https://labs-helper.onrender.com/api';
@@ -82,6 +87,14 @@ function App() {
             path="/attendance" 
             element={user && user.role === 'student' ? <StudentAttendance user={user} onLogout={handleLogout} theme={theme} onToggleTheme={toggleTheme} /> : <Navigate to="/login" />} 
           />
+          <Route 
+            path="/grades-lessons" 
+            element={user && user.role === 'student' ? <StudentLessonGrades user={user} onLogout={handleLogout} theme={theme} onToggleTheme={toggleTheme} /> : <Navigate to="/login" />} 
+          />
+          <Route 
+            path="/grades-exams" 
+            element={user && user.role === 'student' ? <StudentExamGrades user={user} onLogout={handleLogout} theme={theme} onToggleTheme={toggleTheme} /> : <Navigate to="/login" />} 
+          />
           {/* Teacher routes */}
           <Route 
             path="/teacher" 
@@ -98,6 +111,18 @@ function App() {
           <Route 
             path="/teacher/attendance" 
             element={user && user.role === 'teacher' ? <TeacherAttendance user={user} onLogout={handleLogout} theme={theme} onToggleTheme={toggleTheme} /> : <Navigate to="/login" />} 
+          />
+          <Route 
+            path="/teacher/attendance-summary" 
+            element={user && user.role === 'teacher' ? <TeacherAttendanceSummary user={user} onLogout={handleLogout} theme={theme} onToggleTheme={toggleTheme} /> : <Navigate to="/login" />} 
+          />
+          <Route 
+            path="/teacher/grades-lessons" 
+            element={user && user.role === 'teacher' ? <TeacherLessonGrades user={user} onLogout={handleLogout} theme={theme} onToggleTheme={toggleTheme} /> : <Navigate to="/login" />} 
+          />
+          <Route 
+            path="/teacher/grades-exams" 
+            element={user && user.role === 'teacher' ? <TeacherExamGrades user={user} onLogout={handleLogout} theme={theme} onToggleTheme={toggleTheme} /> : <Navigate to="/login" />} 
           />
           <Route 
             path="/" 

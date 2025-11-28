@@ -29,6 +29,15 @@ function Navigation({ user, onLogout, theme, onToggleTheme }) {
             <NavLink to="/teacher/attendance" className={({ isActive }) => isActive ? 'nav-tab active' : 'nav-tab'}>
               Посещаемость
             </NavLink>
+            <NavLink to="/teacher/attendance-summary" className={({ isActive }) => isActive ? 'nav-tab active' : 'nav-tab'}>
+              Сводка посещаемости
+            </NavLink>
+            <NavLink to="/teacher/grades-lessons" className={({ isActive }) => isActive ? 'nav-tab active' : 'nav-tab'}>
+              Оценки занятий
+            </NavLink>
+            <NavLink to="/teacher/grades-exams" className={({ isActive }) => isActive ? 'nav-tab active' : 'nav-tab'}>
+              Контрольные
+            </NavLink>
           </>
         ) : (
           <>
@@ -40,6 +49,12 @@ function Navigation({ user, onLogout, theme, onToggleTheme }) {
             </NavLink>
             <NavLink to="/attendance" className={({ isActive }) => isActive ? 'nav-tab active' : 'nav-tab'}>
               Посещаемость
+            </NavLink>
+            <NavLink to="/grades-lessons" className={({ isActive }) => isActive ? 'nav-tab active' : 'nav-tab'}>
+              Оценки занятий
+            </NavLink>
+            <NavLink to="/grades-exams" className={({ isActive }) => isActive ? 'nav-tab active' : 'nav-tab'}>
+              Оценки контрольные
             </NavLink>
           </>
         )}

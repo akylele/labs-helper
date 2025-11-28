@@ -7,6 +7,7 @@ const { createClient } = require('@supabase/supabase-js');
 const authRoutes = require('./routes/auth');
 const labsRoutes = require('./routes/labs');
 const attendanceRoutes = require('./routes/attendance');
+const gradesRoutes = require('./routes/grades');
 
 const app = express();
 
@@ -31,6 +32,7 @@ app.use(express.json());
 app.use('/api/auth', authRoutes);
 app.use('/api/submissions', labsRoutes);
 app.use('/api/attendance', attendanceRoutes);
+app.use('/api/grades', gradesRoutes);
 
 // Создание учителя при старте
 const createTeacher = async () => {

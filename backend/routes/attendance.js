@@ -52,6 +52,41 @@ router.get('/', auth, teacherOnly, async (req, res) => {
   }
 });
 
+// Сводная таблица посещаемости
+router.get('/summary', auth, teacherOnly, async (req, res) => {
+  try {
+    const supabase = req.app.locals.supabase;
+    const endDate = req.query.endDate || new Date().toISOString().substring(0, 10);
+    const startDate =
+      req.query.startDate ||
+      new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString().substring(0, 10);
+
+    const [{ data: students, error: studentsError }, { data: attendance, error: attendanceError }] =
+      await Promise.all([
+        supabase.from('users').select('id, last_name').eq('role', 'student').order('last_name'),
+        supabase
+          .from('attendance')
+          .select('id, user_id, lesson_date, status')
+          .gte('lesson_date', startDate)
+          .lte('lesson_date', endDate)
+      ]);
+
+    if (studentsError || attendanceError) {
+      throw studentsError || attendanceError;
+    }
+
+    res.json({
+      startDate,
+      endDate,
+      students: students || [],
+      attendance: attendance || []
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Ошибка сервера' });
+  }
+});
+
 // Массовое сохранение посещаемости
 router.post('/bulk', auth, teacherOnly, async (req, res) => {
   try {
