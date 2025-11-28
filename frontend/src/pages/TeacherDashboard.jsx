@@ -1,30 +1,39 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Navigation from '../components/Navigation';
+import LoaderOverlay from '../components/LoaderOverlay';
 
 function TeacherDashboard({ user, onLogout }) {
   const [submissions, setSubmissions] = useState([]);
   const [filter, setFilter] = useState('all');
+  const [loading, setLoading] = useState(true);
+  const [actionLoading, setActionLoading] = useState(false);
 
   useEffect(() => {
     fetchSubmissions();
   }, []);
 
   const fetchSubmissions = async () => {
+    setLoading(true);
     try {
       const res = await axios.get('/submissions/all');
       setSubmissions(res.data);
     } catch (err) {
       console.error('Ошибка загрузки:', err);
+    } finally {
+      setLoading(false);
     }
   };
 
   const updateStatus = async (id, status) => {
+    setActionLoading(true);
     try {
       await axios.patch(`/submissions/${id}/status`, { status });
       fetchSubmissions();
     } catch (err) {
       console.error('Ошибка обновления:', err);
+    } finally {
+      setActionLoading(false);
     }
   };
 
@@ -53,6 +62,7 @@ function TeacherDashboard({ user, onLogout }) {
 
   return (
     <div className="dashboard">
+      <LoaderOverlay visible={loading || actionLoading} text={actionLoading ? 'Обновляем...' : 'Загружаем данные...'} />
       <Navigation user={user} onLogout={onLogout} />
 
       <section className="add-lab-section">

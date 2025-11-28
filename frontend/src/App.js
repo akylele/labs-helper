@@ -9,9 +9,7 @@ import TeacherLabs from './pages/TeacherLabs';
 import TeacherSummary from './pages/TeacherSummary';
 import './App.css';
 
-axios.defaults.baseURL = process.env.NODE_ENV === 'production' 
-  ? 'https://labs-helper.onrender.com/api' 
-  : 'http://localhost:5050/api';
+axios.defaults.baseURL = 'https://labs-helper.onrender.com/api';
   
 function App() {
   const [user, setUser] = useState(null);

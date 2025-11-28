@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Navigation from '../components/Navigation';
+import LoaderOverlay from '../components/LoaderOverlay';
 
 function StudentDashboard({ user, onLogout }) {
   const [submissions, setSubmissions] = useState([]);
@@ -8,13 +9,15 @@ function StudentDashboard({ user, onLogout }) {
   const [labId, setLabId] = useState('');
   const [mrLink, setMrLink] = useState('');
   const [error, setError] = useState('');
-  const [loading, setLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [actionLoading, setActionLoading] = useState(false);
 
   useEffect(() => {
     fetchData();
   }, []);
 
   const fetchData = async () => {
+    setIsLoading(true);
     try {
       const [subsRes, labsRes] = await Promise.all([
         axios.get('/submissions/my'),
@@ -24,13 +27,15 @@ function StudentDashboard({ user, onLogout }) {
       setLabs(labsRes.data);
     } catch (err) {
       console.error('Ошибка загрузки:', err);
+    } finally {
+      setIsLoading(false);
     }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
-    setLoading(true);
+    setActionLoading(true);
 
     try {
       await axios.post('/submissions', { labId, mrLink });
@@ -40,17 +45,20 @@ function StudentDashboard({ user, onLogout }) {
     } catch (err) {
       setError(err.response?.data?.error || 'Ошибка отправки');
     } finally {
-      setLoading(false);
+      setActionLoading(false);
     }
   };
 
   const handleCancel = async (id) => {
     if (!window.confirm('Отменить отправку работы?')) return;
+    setActionLoading(true);
     try {
       await axios.delete(`/submissions/${id}`);
       fetchData();
     } catch (err) {
       console.error('Ошибка отмены:', err);
+    } finally {
+      setActionLoading(false);
     }
   };
 
@@ -80,6 +88,10 @@ function StudentDashboard({ user, onLogout }) {
 
   return (
     <div className="dashboard">
+      <LoaderOverlay 
+        visible={isLoading || actionLoading} 
+        text={actionLoading ? 'Сохраняем...' : 'Загружаем данные...'} 
+      />
       <Navigation user={user} onLogout={onLogout} />
 
       <section className="add-lab-section">
@@ -115,8 +127,8 @@ function StudentDashboard({ user, onLogout }) {
                 required
               />
             </div>
-            <button type="submit" className="btn btn-primary" disabled={loading}>
-              {loading ? 'Отправка...' : 'Отправить'}
+            <button type="submit" className="btn btn-primary" disabled={actionLoading}>
+              Отправить
             </button>
           </form>
         )}

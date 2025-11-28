@@ -1,16 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Navigation from '../components/Navigation';
+import LoaderOverlay from '../components/LoaderOverlay';
 
 function StudentSummary({ user, onLogout }) {
   const [submissions, setSubmissions] = useState([]);
   const [labs, setLabs] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     fetchData();
   }, []);
 
   const fetchData = async () => {
+    setLoading(true);
     try {
       const [subsRes, labsRes] = await Promise.all([
         axios.get('/submissions/my'),
@@ -20,6 +23,8 @@ function StudentSummary({ user, onLogout }) {
       setLabs(labsRes.data);
     } catch (err) {
       console.error('Ошибка загрузки:', err);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -47,6 +52,7 @@ function StudentSummary({ user, onLogout }) {
 
   return (
     <div className="dashboard">
+      <LoaderOverlay visible={loading} text="Загружаем данные..." />
       <Navigation user={user} onLogout={onLogout} />
 
       <section className="summary-section">

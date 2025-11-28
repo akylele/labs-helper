@@ -1,30 +1,35 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Navigation from '../components/Navigation';
+import LoaderOverlay from '../components/LoaderOverlay';
 
 function TeacherLabs({ user, onLogout }) {
   const [labs, setLabs] = useState([]);
   const [newLabName, setNewLabName] = useState('');
   const [error, setError] = useState('');
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [actionLoading, setActionLoading] = useState(false);
 
   useEffect(() => {
     fetchLabs();
   }, []);
 
   const fetchLabs = async () => {
+    setLoading(true);
     try {
       const res = await axios.get('/submissions/labs');
       setLabs(res.data);
     } catch (err) {
       console.error('Ошибка загрузки:', err);
+    } finally {
+      setLoading(false);
     }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
-    setLoading(true);
+    setActionLoading(true);
 
     try {
       await axios.post('/submissions/labs', { name: newLabName });
@@ -33,23 +38,27 @@ function TeacherLabs({ user, onLogout }) {
     } catch (err) {
       setError(err.response?.data?.error || 'Ошибка добавления');
     } finally {
-      setLoading(false);
+      setActionLoading(false);
     }
   };
 
   const handleDelete = async (id) => {
     if (!window.confirm('Удалить лабораторную работу?')) return;
     
+    setActionLoading(true);
     try {
       await axios.delete(`/submissions/labs/${id}`);
       fetchLabs();
     } catch (err) {
       console.error('Ошибка удаления:', err);
+    } finally {
+      setActionLoading(false);
     }
   };
 
   return (
     <div className="dashboard">
+      <LoaderOverlay visible={loading || actionLoading} text={actionLoading ? 'Сохраняем...' : 'Загружаем данные...'} />
       <Navigation user={user} onLogout={onLogout} />
 
       <section className="add-lab-section">
@@ -66,8 +75,8 @@ function TeacherLabs({ user, onLogout }) {
               required
             />
           </div>
-          <button type="submit" className="btn btn-primary" disabled={loading}>
-            {loading ? 'Добавление...' : 'Добавить'}
+          <button type="submit" className="btn btn-primary" disabled={actionLoading}>
+            Добавить
           </button>
         </form>
       </section>
