@@ -53,6 +53,20 @@ ALTER TABLE submissions ADD COLUMN lab_id UUID REFERENCES labs(id) ON DELETE SET
 
 CREATE EXTENSION IF NOT EXISTS pgcrypto;
 
+-- Таблица посещаемости
+CREATE TABLE attendance (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  lesson_date DATE NOT NULL,
+  status TEXT NOT NULL CHECK (status IN ('present', 'absent', 'late')),
+  comment TEXT,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  UNIQUE (user_id, lesson_date)
+);
+
+CREATE INDEX idx_attendance_date ON attendance (lesson_date);
+CREATE INDEX idx_attendance_user ON attendance (user_id);
+
 -- Пример массового добавления студентов
 INSERT INTO users (last_name, password, role)
 VALUES

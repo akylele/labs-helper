@@ -25,6 +25,9 @@ function Navigation({ user, onLogout }) {
             <NavLink to="/teacher/summary" className={({ isActive }) => isActive ? 'nav-tab active' : 'nav-tab'}>
               Сводная таблица
             </NavLink>
+            <NavLink to="/teacher/attendance" className={({ isActive }) => isActive ? 'nav-tab active' : 'nav-tab'}>
+              Посещаемость
+            </NavLink>
           </>
         ) : (
           <>
@@ -33,6 +36,9 @@ function Navigation({ user, onLogout }) {
             </NavLink>
             <NavLink to="/my-labs" className={({ isActive }) => isActive ? 'nav-tab active' : 'nav-tab'}>
               Мои работы
+            </NavLink>
+            <NavLink to="/attendance" className={({ isActive }) => isActive ? 'nav-tab active' : 'nav-tab'}>
+              Посещаемость
             </NavLink>
           </>
         )}

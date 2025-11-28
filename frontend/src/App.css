@@ -696,6 +696,87 @@ body {
   }
 }
 
+.attendance-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.attendance-table-wrapper {
+  overflow-x: auto;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+}
+
+.attendance-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.attendance-table th,
+.attendance-table td {
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.attendance-table select,
+.attendance-table input {
+  width: 100%;
+  padding: 10px 12px;
+  background: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  color: var(--text-primary);
+  font-family: inherit;
+}
+
+.attendance-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.attendance-card {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 16px 20px;
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.attendance-date {
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.attendance-status {
+  color: var(--text-secondary);
+}
+
+.attendance-comment {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  font-style: italic;
+}
+
+.attendance-card.status-present {
+  border-color: var(--accent-green);
+}
+
+.attendance-card.status-absent {
+  border-color: var(--accent-red);
+}
+
+.attendance-card.status-late {
+  border-color: var(--accent-yellow);
+}
+
 @media (max-width: 768px) {
   .dashboard-header {
     flex-direction: column;

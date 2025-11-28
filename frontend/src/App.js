@@ -4,9 +4,11 @@ import axios from 'axios';
 import LoginPage from './pages/LoginPage';
 import StudentDashboard from './pages/StudentDashboard';
 import StudentSummary from './pages/StudentSummary';
+import StudentAttendance from './pages/StudentAttendance';
 import TeacherDashboard from './pages/TeacherDashboard';
 import TeacherLabs from './pages/TeacherLabs';
 import TeacherSummary from './pages/TeacherSummary';
+import TeacherAttendance from './pages/TeacherAttendance';
 import './App.css';
 
 axios.defaults.baseURL = 'https://labs-helper.onrender.com/api';
@@ -66,6 +68,10 @@ function App() {
             path="/my-labs" 
             element={user && user.role === 'student' ? <StudentSummary user={user} onLogout={handleLogout} /> : <Navigate to="/login" />} 
           />
+          <Route 
+            path="/attendance" 
+            element={user && user.role === 'student' ? <StudentAttendance user={user} onLogout={handleLogout} /> : <Navigate to="/login" />} 
+          />
           {/* Teacher routes */}
           <Route 
             path="/teacher" 
@@ -78,6 +84,10 @@ function App() {
           <Route 
             path="/teacher/summary" 
             element={user && user.role === 'teacher' ? <TeacherSummary user={user} onLogout={handleLogout} /> : <Navigate to="/login" />} 
+          />
+          <Route 
+            path="/teacher/attendance" 
+            element={user && user.role === 'teacher' ? <TeacherAttendance user={user} onLogout={handleLogout} /> : <Navigate to="/login" />} 
           />
           <Route 
             path="/" 
