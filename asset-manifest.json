@@ -1,12 +1,12 @@
 {
   "files": {
     "main.css": "/labs-helper/static/css/main.87d17e96.css",
-    "main.js": "/labs-helper/static/js/main.a2578fa6.js",
+    "main.js": "/labs-helper/static/js/main.a1972dc8.js",
     "static/js/206.af82273e.chunk.js": "/labs-helper/static/js/206.af82273e.chunk.js",
     "index.html": "/labs-helper/index.html"
   },
   "entrypoints": [
     "static/css/main.87d17e96.css",
-    "static/js/main.a2578fa6.js"
+    "static/js/main.a1972dc8.js"
   ]
 }
