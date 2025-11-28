@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { HashRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import axios from 'axios';
 import LoginPage from './pages/LoginPage';
-import RegisterPage from './pages/RegisterPage';
 import StudentDashboard from './pages/StudentDashboard';
 import StudentSummary from './pages/StudentSummary';
 import TeacherDashboard from './pages/TeacherDashboard';
@@ -13,7 +12,7 @@ import './App.css';
 axios.defaults.baseURL = process.env.NODE_ENV === 'production' 
   ? 'https://labs-helper.onrender.com/api' 
   : 'http://localhost:5050/api';
-
+  
 function App() {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -59,10 +58,6 @@ function App() {
           <Route 
             path="/login" 
             element={user ? <Navigate to={user.role === 'teacher' ? '/teacher' : '/dashboard'} /> : <LoginPage onLogin={handleLogin} />} 
-          />
-          <Route 
-            path="/register" 
-            element={user ? <Navigate to="/dashboard" /> : <RegisterPage onLogin={handleLogin} />} 
           />
           {/* Student routes */}
           <Route 

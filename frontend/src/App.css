@@ -637,3 +637,26 @@ body {
   background: var(--accent-yellow);
   color: var(--bg-primary);
 }
+
+@media (max-width: 768px) {
+  .dashboard-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+  }
+
+  .nav-tabs {
+    flex-wrap: wrap;
+    width: 100%;
+  }
+
+  .nav-tab {
+    flex: 1 1 calc(50% - 8px);
+    text-align: center;
+  }
+
+  .dashboard-header .user-info {
+    width: 100%;
+    justify-content: space-between;
+  }
+}

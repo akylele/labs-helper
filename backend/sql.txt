@@ -50,3 +50,15 @@ ALTER TABLE submissions DROP COLUMN IF EXISTS lab_id;
 
 -- Добавить заново с правильным foreign key
 ALTER TABLE submissions ADD COLUMN lab_id UUID REFERENCES labs(id) ON DELETE SET NULL;
+
+CREATE EXTENSION IF NOT EXISTS pgcrypto;
+
+-- Пример массового добавления студентов
+INSERT INTO users (last_name, password, role)
+VALUES
+  ('surname', crypt('password', gen_salt('bf', 10)), 'student'),
+
+-- Пример обновления пароля конкретного студента
+UPDATE users
+SET password = crypt('новыйПароль', gen_salt('bf', 10))
+WHERE last_name = 'Иванов' AND role = 'student';

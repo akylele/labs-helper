@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
 import axios from 'axios';
 
 function LoginPage({ onLogin }) {
@@ -27,7 +26,7 @@ function LoginPage({ onLogin }) {
     <div className="auth-container">
       <div className="auth-card">
         <h1>Вход</h1>
-        <p className="subtitle">Лабораторные работы</p>
+        <p className="subtitle">Данные выдаёт преподаватель</p>
         
         {error && <div className="error-message">{error}</div>}
         
@@ -59,9 +58,6 @@ function LoginPage({ onLogin }) {
           </button>
         </form>
         
-        <p className="auth-link">
-          Нет аккаунта? <Link to="/register">Зарегистрироваться</Link>
-        </p>
       </div>
     </div>
   );

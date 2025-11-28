@@ -4,62 +4,6 @@ const jwt = require('jsonwebtoken');
 
 const router = express.Router();
 
-// Регистрация студента
-router.post('/register', async (req, res) => {
-  try {
-    const supabase = req.app.locals.supabase;
-    const { lastName, password } = req.body;
-
-    if (!lastName || !password) {
-      return res.status(400).json({ error: 'Заполните все поля' });
-    }
-
-    if (password.length < 4) {
-      return res.status(400).json({ error: 'Пароль должен быть минимум 4 символа' });
-    }
-
-    // Check if student exists
-    const { data: existingUser } = await supabase
-      .from('users')
-      .select('id')
-      .eq('last_name', lastName)
-      .eq('role', 'student')
-      .single();
-
-    if (existingUser) {
-      return res.status(400).json({ error: 'Студент с такой фамилией уже зарегистрирован' });
-    }
-
-    const hashedPassword = await bcrypt.hash(password, 10);
-    
-    const { data: user, error } = await supabase
-      .from('users')
-      .insert({
-        last_name: lastName,
-        password: hashedPassword,
-        role: 'student'
-      })
-      .select()
-      .single();
-
-    if (error) throw error;
-
-    const token = jwt.sign({ userId: user.id }, process.env.JWT_SECRET, { expiresIn: '7d' });
-
-    res.status(201).json({
-      token,
-      user: {
-        id: user.id,
-        lastName: user.last_name,
-        role: user.role
-      }
-    });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Ошибка сервера' });
-  }
-});
-
 // Вход
 router.post('/login', async (req, res) => {
   try {
