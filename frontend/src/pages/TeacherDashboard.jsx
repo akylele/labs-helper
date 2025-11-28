@@ -3,7 +3,7 @@ import axios from 'axios';
 import Navigation from '../components/Navigation';
 import LoaderOverlay from '../components/LoaderOverlay';
 
-function TeacherDashboard({ user, onLogout }) {
+function TeacherDashboard({ user, onLogout, theme, onToggleTheme }) {
   const [submissions, setSubmissions] = useState([]);
   const [filter, setFilter] = useState('all');
   const [loading, setLoading] = useState(true);
@@ -63,7 +63,7 @@ function TeacherDashboard({ user, onLogout }) {
   return (
     <div className="dashboard">
       <LoaderOverlay visible={loading || actionLoading} text={actionLoading ? 'Обновляем...' : 'Загружаем данные...'} />
-      <Navigation user={user} onLogout={onLogout} />
+      <Navigation user={user} onLogout={onLogout} theme={theme} onToggleTheme={onToggleTheme} />
 
       <section className="add-lab-section">
         <h2>Фильтр по статусу</h2>

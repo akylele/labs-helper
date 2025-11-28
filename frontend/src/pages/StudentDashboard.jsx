@@ -3,7 +3,7 @@ import axios from 'axios';
 import Navigation from '../components/Navigation';
 import LoaderOverlay from '../components/LoaderOverlay';
 
-function StudentDashboard({ user, onLogout }) {
+function StudentDashboard({ user, onLogout, theme, onToggleTheme }) {
   const [submissions, setSubmissions] = useState([]);
   const [labs, setLabs] = useState([]);
   const [labId, setLabId] = useState('');
@@ -92,7 +92,7 @@ function StudentDashboard({ user, onLogout }) {
         visible={isLoading || actionLoading} 
         text={actionLoading ? 'Сохраняем...' : 'Загружаем данные...'} 
       />
-      <Navigation user={user} onLogout={onLogout} />
+      <Navigation user={user} onLogout={onLogout} theme={theme} onToggleTheme={onToggleTheme} />
 
       <section className="add-lab-section">
         <h2>Сдать лабораторную работу</h2>

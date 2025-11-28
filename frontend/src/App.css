@@ -21,6 +21,21 @@
   --accent-purple: #a371f7;
 }
 
+body[data-theme='light'] {
+  --bg-primary: #f5f6fb;
+  --bg-secondary: #ffffff;
+  --bg-tertiary: #e3e8f5;
+  --border-color: #d0d7e5;
+  --text-primary: #111827;
+  --text-secondary: #4b5563;
+  --accent-green: #15803d;
+  --accent-green-hover: #16a34a;
+  --accent-red: #dc2626;
+  --accent-yellow: #d97706;
+  --accent-blue: #2563eb;
+  --accent-purple: #7c3aed;
+}
+
 body {
   font-family: 'Space Grotesk', -apple-system, BlinkMacSystemFont, sans-serif;
   background: var(--bg-primary);
@@ -427,6 +442,31 @@ body {
   background: var(--accent-blue);
   border-color: var(--accent-blue);
   color: white;
+}
+
+.theme-toggle {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 1px solid var(--border-color);
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.theme-toggle:hover {
+  border-color: var(--accent-blue);
+  color: var(--accent-blue);
+}
+
+.theme-toggle:focus-visible {
+  outline: 2px solid var(--accent-blue);
+  outline-offset: 2px;
 }
 
 .header-left {

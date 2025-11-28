@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { NavLink } from 'react-router-dom';
+import ThemeToggle from './ThemeToggle';
 
-function Navigation({ user, onLogout }) {
+function Navigation({ user, onLogout, theme, onToggleTheme }) {
   const [isMobileMenuOpen, setMobileMenuOpen] = useState(false);
   const isTeacher = user.role === 'teacher';
 
@@ -45,6 +46,7 @@ function Navigation({ user, onLogout }) {
         </nav>
       </div>
       <div className="user-info">
+        <ThemeToggle theme={theme} onToggle={onToggleTheme} />
         <span className="user-name" title={user.lastName}>{user.lastName}</span>
         <button onClick={onLogout} className="btn-logout">Выйти</button>
       </div>

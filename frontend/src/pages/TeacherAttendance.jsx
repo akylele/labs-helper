@@ -9,7 +9,7 @@ const STATUSES = [
   { value: 'late', label: 'Опоздал' }
 ];
 
-function TeacherAttendance({ user, onLogout }) {
+function TeacherAttendance({ user, onLogout, theme, onToggleTheme }) {
   const [selectedDate, setSelectedDate] = useState(() => new Date().toISOString().substring(0, 10));
   const [students, setStudents] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -109,7 +109,7 @@ function TeacherAttendance({ user, onLogout }) {
   return (
     <div className="dashboard">
       <LoaderOverlay visible={loading || saving} text={saving ? 'Сохраняем посещаемость...' : 'Загружаем данные...'} />
-      <Navigation user={user} onLogout={onLogout} />
+      <Navigation user={user} onLogout={onLogout} theme={theme} onToggleTheme={onToggleTheme} />
 
       <section className="add-lab-section">
         <div className="attendance-header">

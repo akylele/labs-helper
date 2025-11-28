@@ -3,7 +3,7 @@ import axios from 'axios';
 import Navigation from '../components/Navigation';
 import LoaderOverlay from '../components/LoaderOverlay';
 
-function TeacherLabs({ user, onLogout }) {
+function TeacherLabs({ user, onLogout, theme, onToggleTheme }) {
   const [labs, setLabs] = useState([]);
   const [newLabName, setNewLabName] = useState('');
   const [error, setError] = useState('');
@@ -59,7 +59,7 @@ function TeacherLabs({ user, onLogout }) {
   return (
     <div className="dashboard">
       <LoaderOverlay visible={loading || actionLoading} text={actionLoading ? 'Сохраняем...' : 'Загружаем данные...'} />
-      <Navigation user={user} onLogout={onLogout} />
+      <Navigation user={user} onLogout={onLogout} theme={theme} onToggleTheme={onToggleTheme} />
 
       <section className="add-lab-section">
         <h2>Добавить лабораторную работу</h2>

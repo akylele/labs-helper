@@ -3,7 +3,7 @@ import axios from 'axios';
 import Navigation from '../components/Navigation';
 import LoaderOverlay from '../components/LoaderOverlay';
 
-function StudentSummary({ user, onLogout }) {
+function StudentSummary({ user, onLogout, theme, onToggleTheme }) {
   const [submissions, setSubmissions] = useState([]);
   const [labs, setLabs] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -53,7 +53,7 @@ function StudentSummary({ user, onLogout }) {
   return (
     <div className="dashboard">
       <LoaderOverlay visible={loading} text="Загружаем данные..." />
-      <Navigation user={user} onLogout={onLogout} />
+      <Navigation user={user} onLogout={onLogout} theme={theme} onToggleTheme={onToggleTheme} />
 
       <section className="summary-section">
         <h2>Мои лабораторные работы</h2>

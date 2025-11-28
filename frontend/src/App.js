@@ -16,6 +16,16 @@ axios.defaults.baseURL = 'https://labs-helper.onrender.com/api';
 function App() {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [theme, setTheme] = useState(() => localStorage.getItem('theme') || 'dark');
+
+  useEffect(() => {
+    document.body.dataset.theme = theme;
+    localStorage.setItem('theme', theme);
+  }, [theme]);
+
+  const toggleTheme = () => {
+    setTheme(prev => prev === 'dark' ? 'light' : 'dark');
+  };
 
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -62,32 +72,32 @@ function App() {
           {/* Student routes */}
           <Route 
             path="/dashboard" 
-            element={user && user.role === 'student' ? <StudentDashboard user={user} onLogout={handleLogout} /> : <Navigate to="/login" />} 
+            element={user && user.role === 'student' ? <StudentDashboard user={user} onLogout={handleLogout} theme={theme} onToggleTheme={toggleTheme} /> : <Navigate to="/login" />} 
           />
           <Route 
             path="/my-labs" 
-            element={user && user.role === 'student' ? <StudentSummary user={user} onLogout={handleLogout} /> : <Navigate to="/login" />} 
+            element={user && user.role === 'student' ? <StudentSummary user={user} onLogout={handleLogout} theme={theme} onToggleTheme={toggleTheme} /> : <Navigate to="/login" />} 
           />
           <Route 
             path="/attendance" 
-            element={user && user.role === 'student' ? <StudentAttendance user={user} onLogout={handleLogout} /> : <Navigate to="/login" />} 
+            element={user && user.role === 'student' ? <StudentAttendance user={user} onLogout={handleLogout} theme={theme} onToggleTheme={toggleTheme} /> : <Navigate to="/login" />} 
           />
           {/* Teacher routes */}
           <Route 
             path="/teacher" 
-            element={user && user.role === 'teacher' ? <TeacherDashboard user={user} onLogout={handleLogout} /> : <Navigate to="/login" />} 
+            element={user && user.role === 'teacher' ? <TeacherDashboard user={user} onLogout={handleLogout} theme={theme} onToggleTheme={toggleTheme} /> : <Navigate to="/login" />} 
           />
           <Route 
             path="/teacher/labs" 
-            element={user && user.role === 'teacher' ? <TeacherLabs user={user} onLogout={handleLogout} /> : <Navigate to="/login" />} 
+            element={user && user.role === 'teacher' ? <TeacherLabs user={user} onLogout={handleLogout} theme={theme} onToggleTheme={toggleTheme} /> : <Navigate to="/login" />} 
           />
           <Route 
             path="/teacher/summary" 
-            element={user && user.role === 'teacher' ? <TeacherSummary user={user} onLogout={handleLogout} /> : <Navigate to="/login" />} 
+            element={user && user.role === 'teacher' ? <TeacherSummary user={user} onLogout={handleLogout} theme={theme} onToggleTheme={toggleTheme} /> : <Navigate to="/login" />} 
           />
           <Route 
             path="/teacher/attendance" 
-            element={user && user.role === 'teacher' ? <TeacherAttendance user={user} onLogout={handleLogout} /> : <Navigate to="/login" />} 
+            element={user && user.role === 'teacher' ? <TeacherAttendance user={user} onLogout={handleLogout} theme={theme} onToggleTheme={toggleTheme} /> : <Navigate to="/login" />} 
           />
           <Route 
             path="/" 

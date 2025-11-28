@@ -3,7 +3,7 @@ import axios from 'axios';
 import Navigation from '../components/Navigation';
 import LoaderOverlay from '../components/LoaderOverlay';
 
-function TeacherSummary({ user, onLogout }) {
+function TeacherSummary({ user, onLogout, theme, onToggleTheme }) {
   const [data, setData] = useState({ students: [], labs: [], submissions: [] });
   const [filterName, setFilterName] = useState('');
   const [loading, setLoading] = useState(true);
@@ -44,7 +44,7 @@ function TeacherSummary({ user, onLogout }) {
   return (
     <div className="dashboard">
       <LoaderOverlay visible={loading} text="Загружаем данные..." />
-      <Navigation user={user} onLogout={onLogout} />
+      <Navigation user={user} onLogout={onLogout} theme={theme} onToggleTheme={onToggleTheme} />
 
       <section className="add-lab-section">
         <h2>Сводная таблица</h2>

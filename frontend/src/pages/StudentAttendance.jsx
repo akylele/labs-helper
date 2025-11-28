@@ -9,7 +9,7 @@ const STATUS_LABELS = {
   late: 'Опоздал'
 };
 
-function StudentAttendance({ user, onLogout }) {
+function StudentAttendance({ user, onLogout, theme, onToggleTheme }) {
   const [records, setRecords] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -32,7 +32,7 @@ function StudentAttendance({ user, onLogout }) {
   return (
     <div className="dashboard">
       <LoaderOverlay visible={loading} text="Загружаем посещаемость..." />
-      <Navigation user={user} onLogout={onLogout} />
+      <Navigation user={user} onLogout={onLogout} theme={theme} onToggleTheme={onToggleTheme} />
 
       <section className="summary-section">
         <h2>Моя посещаемость</h2>
