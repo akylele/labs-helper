@@ -123,7 +123,7 @@ function StudentDashboard({ user, onLogout, theme, onToggleTheme }) {
                 type="url"
                 value={mrLink}
                 onChange={(e) => setMrLink(e.target.value)}
-                placeholder="https://gitlab.com/.../merge_requests/1"
+                placeholder="https://gitlab.com/.../merge_requests/1 или https://github.com/.../pull/1"
                 required
               />
             </div>

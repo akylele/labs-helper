@@ -14,9 +14,13 @@ import TeacherAttendance from './pages/TeacherAttendance';
 import TeacherAttendanceSummary from './pages/TeacherAttendanceSummary';
 import TeacherLessonGrades from './pages/TeacherLessonGrades';
 import TeacherExamGrades from './pages/TeacherExamGrades';
+import TeacherLessonGradesSummary from './pages/TeacherLessonGradesSummary';
+import TeacherExamGradesSummary from './pages/TeacherExamGradesSummary';
 import './App.css';
 
-axios.defaults.baseURL = 'https://labs-helper.onrender.com/api';
+axios.defaults.baseURL = process.env.NODE_ENV === 'production' 
+  ? 'https://labs-helper.onrender.com/api' 
+  : 'http://localhost:5050/api';
   
 function App() {
   const [user, setUser] = useState(null);
@@ -123,6 +127,14 @@ function App() {
           <Route 
             path="/teacher/grades-exams" 
             element={user && user.role === 'teacher' ? <TeacherExamGrades user={user} onLogout={handleLogout} theme={theme} onToggleTheme={toggleTheme} /> : <Navigate to="/login" />} 
+          />
+          <Route 
+            path="/teacher/grades-lessons-summary" 
+            element={user && user.role === 'teacher' ? <TeacherLessonGradesSummary user={user} onLogout={handleLogout} theme={theme} onToggleTheme={toggleTheme} /> : <Navigate to="/login" />} 
+          />
+          <Route 
+            path="/teacher/grades-exams-summary" 
+            element={user && user.role === 'teacher' ? <TeacherExamGradesSummary user={user} onLogout={handleLogout} theme={theme} onToggleTheme={toggleTheme} /> : <Navigate to="/login" />} 
           />
           <Route 
             path="/" 

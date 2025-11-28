@@ -21,7 +21,7 @@ function Navigation({ user, onLogout, theme, onToggleTheme }) {
               Работы
             </NavLink>
             <NavLink to="/teacher/labs" className={({ isActive }) => isActive ? 'nav-tab active' : 'nav-tab'}>
-              Лабораторные
+              Список Работ
             </NavLink>
             <NavLink to="/teacher/summary" className={({ isActive }) => isActive ? 'nav-tab active' : 'nav-tab'}>
               Сводная таблица
@@ -37,6 +37,12 @@ function Navigation({ user, onLogout, theme, onToggleTheme }) {
             </NavLink>
             <NavLink to="/teacher/grades-exams" className={({ isActive }) => isActive ? 'nav-tab active' : 'nav-tab'}>
               Контрольные
+            </NavLink>
+            <NavLink to="/teacher/grades-lessons-summary" className={({ isActive }) => isActive ? 'nav-tab active' : 'nav-tab'}>
+              Сводка оценок занятий
+            </NavLink>
+            <NavLink to="/teacher/grades-exams-summary" className={({ isActive }) => isActive ? 'nav-tab active' : 'nav-tab'}>
+              Сводка контрольных
             </NavLink>
           </>
         ) : (
@@ -62,7 +68,7 @@ function Navigation({ user, onLogout, theme, onToggleTheme }) {
       </div>
       <div className="user-info">
         <ThemeToggle theme={theme} onToggle={onToggleTheme} />
-        <span className="user-name" title={user.lastName}>{user.lastName}</span>
+        <span className="user-name" title={user.fullName || user.lastName}>{user.fullName || user.lastName}</span>
         <button onClick={onLogout} className="btn-logout">Выйти</button>
       </div>
     </header>

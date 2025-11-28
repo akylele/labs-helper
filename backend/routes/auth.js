@@ -4,6 +4,14 @@ const jwt = require('jsonwebtoken');
 
 const router = express.Router();
 
+// Вспомогательная функция для форматирования полного имени
+const formatFullName = (user) => {
+  if (user.first_name && user.last_name) {
+    return `${user.first_name} ${user.last_name}`;
+  }
+  return user.last_name || '';
+};
+
 // Вход
 router.post('/login', async (req, res) => {
   try {
@@ -36,6 +44,7 @@ router.post('/login', async (req, res) => {
       user: {
         id: user.id,
         lastName: user.last_name,
+        fullName: formatFullName(user),
         role: user.role
       }
     });
@@ -59,7 +68,7 @@ router.get('/me', async (req, res) => {
     
     const { data: user } = await supabase
       .from('users')
-      .select('id, last_name, role')
+      .select('id, last_name, first_name, role')
       .eq('id', decoded.userId)
       .single();
 
@@ -71,6 +80,7 @@ router.get('/me', async (req, res) => {
       user: {
         id: user.id,
         lastName: user.last_name,
+        fullName: formatFullName(user),
         role: user.role
       }
     });

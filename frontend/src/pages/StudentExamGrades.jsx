@@ -5,8 +5,11 @@ import LoaderOverlay from '../components/LoaderOverlay';
 
 const gradeClass = (value) => {
   if (value === null || value === undefined) return 'grade-badge-empty';
-  if (value >= 85) return 'grade-badge-high';
-  if (value >= 60) return 'grade-badge-mid';
+  // 6-10 - зеленый
+  if (value >= 6) return 'grade-badge-high';
+  // 4-5 - желтый
+  if (value >= 4) return 'grade-badge-mid';
+  // 1-3 - красный
   return 'grade-badge-low';
 };
 

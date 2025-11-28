@@ -142,7 +142,7 @@ function TeacherAttendance({ user, onLogout, theme, onToggleTheme }) {
             <table className="attendance-table">
               <thead>
                 <tr>
-                  <th>Фамилия</th>
+                  <th>ФИО</th>
                   <th>Статус</th>
                   <th>Комментарий</th>
                 </tr>
@@ -150,21 +150,34 @@ function TeacherAttendance({ user, onLogout, theme, onToggleTheme }) {
               <tbody>
                 {students.map((student) => (
                   <tr key={student.id}>
-                    <td>{student.lastName}</td>
+                    <td>{student.fullName || student.lastName}</td>
                     <td>
-                      <select
-                        value={student.attendance?.status || ''}
-                        onChange={(e) => handleStatusChange(student.id, e.target.value)}
-                      >
-                        <option value="" disabled>
-                          Не отмечено
-                        </option>
-                        {STATUSES.map((status) => (
-                          <option key={status.value} value={status.value}>
-                            {status.label}
-                          </option>
-                        ))}
-                      </select>
+                      <div className="attendance-buttons">
+                        <button
+                          type="button"
+                          className={`attendance-btn attendance-btn-present ${student.attendance?.status === 'present' ? 'active' : ''}`}
+                          onClick={() => handleStatusChange(student.id, 'present')}
+                          title="Присутствовал"
+                        >
+                          +
+                        </button>
+                        <button
+                          type="button"
+                          className={`attendance-btn attendance-btn-absent ${student.attendance?.status === 'absent' ? 'active' : ''}`}
+                          onClick={() => handleStatusChange(student.id, 'absent')}
+                          title="Отсутствовал"
+                        >
+                          −
+                        </button>
+                        <button
+                          type="button"
+                          className={`attendance-btn attendance-btn-late ${student.attendance?.status === 'late' ? 'active' : ''}`}
+                          onClick={() => handleStatusChange(student.id, 'late')}
+                          title="Опоздал"
+                        >
+                          0
+                        </button>
+                      </div>
                     </td>
                     <td>
                       <input

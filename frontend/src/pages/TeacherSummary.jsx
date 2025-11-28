@@ -37,9 +37,10 @@ function TeacherSummary({ user, onLogout, theme, onToggleTheme }) {
     }
   };
 
-  const filteredStudents = data.students.filter(s => 
-    s.last_name.toLowerCase().includes(filterName.toLowerCase())
-  );
+  const filteredStudents = data.students.filter(s => {
+    const fullName = s.fullName || s.last_name || '';
+    return fullName.toLowerCase().includes(filterName.toLowerCase());
+  });
 
   return (
     <div className="dashboard">
@@ -49,12 +50,12 @@ function TeacherSummary({ user, onLogout, theme, onToggleTheme }) {
       <section className="add-lab-section">
         <h2>Сводная таблица</h2>
         <div className="form-group" style={{ maxWidth: '300px' }}>
-          <label>Фильтр по фамилии</label>
+          <label>Фильтр по ФИО</label>
           <input
             type="text"
             value={filterName}
             onChange={(e) => setFilterName(e.target.value)}
-            placeholder="Введите фамилию..."
+            placeholder="Введите имя или фамилию..."
           />
         </div>
       </section>
@@ -73,7 +74,7 @@ function TeacherSummary({ user, onLogout, theme, onToggleTheme }) {
             <table className="summary-table">
               <thead>
                 <tr>
-                  <th className="sticky-col">Фамилия</th>
+                  <th className="sticky-col">ФИО</th>
                   {data.labs.map(lab => (
                     <th key={lab.id} title={lab.name}>
                       {lab.name.length > 15 ? lab.name.substring(0, 15) + '...' : lab.name}
@@ -84,7 +85,7 @@ function TeacherSummary({ user, onLogout, theme, onToggleTheme }) {
               <tbody>
                 {filteredStudents.map(student => (
                   <tr key={student.id}>
-                    <td className="sticky-col">{student.last_name}</td>
+                    <td className="sticky-col">{student.fullName || student.last_name}</td>
                     {data.labs.map(lab => {
                       const sub = getSubmission(student.id, lab.id);
                       return (

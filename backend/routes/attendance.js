@@ -5,6 +5,14 @@ const router = express.Router();
 
 const VALID_STATUSES = ['present', 'absent', 'late'];
 
+// Вспомогательная функция для форматирования полного имени
+const formatFullName = (user) => {
+  if (user.first_name && user.last_name) {
+    return `${user.first_name} ${user.last_name}`;
+  }
+  return user.last_name || '';
+};
+
 // Получить посещаемость студентов за конкретную дату (преподаватель)
 router.get('/', auth, teacherOnly, async (req, res) => {
   try {
@@ -18,7 +26,7 @@ router.get('/', auth, teacherOnly, async (req, res) => {
     const [{ data: students, error: studentsError }, { data: attendance, error: attendanceError }] = await Promise.all([
       supabase
         .from('users')
-        .select('id, last_name')
+        .select('id, last_name, first_name')
         .eq('role', 'student')
         .order('last_name'),
       supabase
@@ -39,6 +47,7 @@ router.get('/', auth, teacherOnly, async (req, res) => {
     const payload = students.map((student) => ({
       id: student.id,
       lastName: student.last_name,
+      fullName: formatFullName(student),
       attendance: attendanceMap[student.id] || null
     }));
 
@@ -59,11 +68,11 @@ router.get('/summary', auth, teacherOnly, async (req, res) => {
     const endDate = req.query.endDate || new Date().toISOString().substring(0, 10);
     const startDate =
       req.query.startDate ||
-      new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString().substring(0, 10);
+      new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString().substring(0, 10);
 
     const [{ data: students, error: studentsError }, { data: attendance, error: attendanceError }] =
       await Promise.all([
-        supabase.from('users').select('id, last_name').eq('role', 'student').order('last_name'),
+        supabase.from('users').select('id, last_name, first_name').eq('role', 'student').order('last_name'),
         supabase
           .from('attendance')
           .select('id, user_id, lesson_date, status')
@@ -78,7 +87,7 @@ router.get('/summary', auth, teacherOnly, async (req, res) => {
     res.json({
       startDate,
       endDate,
-      students: students || [],
+      students: (students || []).map(s => ({ ...s, fullName: formatFullName(s) })),
       attendance: attendance || []
     });
   } catch (error) {

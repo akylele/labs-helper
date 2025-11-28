@@ -205,12 +205,12 @@ function TeacherExamGrades({ user, onLogout, theme, onToggleTheme }) {
               <tbody>
                 {students.map((student) => (
                   <tr key={student.id}>
-                    <td>{student.lastName}</td>
+                    <td>{student.fullName || student.lastName}</td>
                     <td>
                       <input
                         type="number"
                         min="0"
-                        max="100"
+                        max="10"
                         value={student.grade?.grade_value ?? ''}
                         onChange={(e) => handleGradeChange(student.id, e.target.value)}
                       />

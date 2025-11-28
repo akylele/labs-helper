@@ -62,16 +62,16 @@ function TeacherLabs({ user, onLogout, theme, onToggleTheme }) {
       <Navigation user={user} onLogout={onLogout} theme={theme} onToggleTheme={onToggleTheme} />
 
       <section className="add-lab-section">
-        <h2>Добавить лабораторную работу</h2>
+        <h2>Добавить работу</h2>
         {error && <div className="error-message">{error}</div>}
         <form onSubmit={handleSubmit} className="add-lab-form" style={{ gridTemplateColumns: '1fr auto' }}>
           <div className="form-group">
-            <label>Название лабораторной</label>
+            <label>Название работы</label>
             <input
               type="text"
               value={newLabName}
               onChange={(e) => setNewLabName(e.target.value)}
-              placeholder="Лабораторная 1 — Введение в Git"
+              placeholder="Работа 1 — Введение в Git"
               required
             />
           </div>
@@ -82,10 +82,10 @@ function TeacherLabs({ user, onLogout, theme, onToggleTheme }) {
       </section>
 
       <section className="submissions-section">
-        <h2>Список лабораторных работ</h2>
+        <h2>Список работ</h2>
         {labs.length === 0 ? (
           <div className="empty-state">
-            <p>Лабораторные работы ещё не добавлены</p>
+            <p>Работы ещё не добавлены</p>
           </div>
         ) : (
           <div className="labs-list">

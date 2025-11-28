@@ -1,4 +1,6 @@
+// Загружаем .env, затем .env.local (если есть) - .env.local имеет приоритет
 require('dotenv').config();
+require('dotenv').config({ path: '.env.local', override: true });
 const express = require('express');
 const cors = require('cors');
 const bcrypt = require('bcryptjs');

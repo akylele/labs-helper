@@ -3,20 +3,24 @@ import axios from 'axios';
 import Navigation from '../components/Navigation';
 import LoaderOverlay from '../components/LoaderOverlay';
 
-const STATUS_CLASS = {
-  present: 'attendance-summary-present',
-  absent: 'attendance-summary-absent',
-  late: 'attendance-summary-late'
-};
+function getGradeClass(grade) {
+  if (!grade) return 'grade-summary-empty';
+  // 6-10 - зеленый
+  if (grade >= 6) return 'grade-summary-excellent';
+  // 4-5 - желтый
+  if (grade >= 4) return 'grade-summary-average';
+  // 1-3 - красный
+  return 'grade-summary-poor';
+}
 
-function TeacherAttendanceSummary({ user, onLogout, theme, onToggleTheme }) {
+function TeacherLessonGradesSummary({ user, onLogout, theme, onToggleTheme }) {
   const today = new Date().toISOString().substring(0, 10);
   const weekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString().substring(0, 10);
 
   const [startDate, setStartDate] = useState(weekAgo);
   const [endDate, setEndDate] = useState(today);
   const [students, setStudents] = useState([]);
-  const [attendance, setAttendance] = useState([]);
+  const [grades, setGrades] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -26,11 +30,11 @@ function TeacherAttendanceSummary({ user, onLogout, theme, onToggleTheme }) {
   const fetchSummary = async () => {
     setLoading(true);
     try {
-      const res = await axios.get('/attendance/summary', {
+      const res = await axios.get('/grades/lessons/summary', {
         params: { startDate, endDate }
       });
       setStudents(res.data.students || []);
-      setAttendance(res.data.attendance || []);
+      setGrades(res.data.grades || []);
     } catch (error) {
       console.error('Ошибка загрузки сводки:', error);
     } finally {
@@ -48,13 +52,26 @@ function TeacherAttendanceSummary({ user, onLogout, theme, onToggleTheme }) {
     return dates;
   }, [startDate, endDate]);
 
-  const attendanceMap = useMemo(() => {
+  const gradesMap = useMemo(() => {
     const map = {};
-    attendance.forEach((record) => {
-      map[`${record.user_id}-${record.lesson_date}`] = record.status;
+    grades.forEach((record) => {
+      const key = `${record.user_id}-${record.lesson_date}`;
+      if (!map[key]) {
+        map[key] = [];
+      }
+      const index = (record.grade_index || 1) - 1;
+      map[key][index] = record.grade_value;
     });
-    return map;
-  }, [attendance]);
+    // Преобразуем массивы в строки для отображения
+    const result = {};
+    Object.keys(map).forEach((key) => {
+      const values = map[key].filter(v => v !== undefined && v !== null);
+      if (values.length > 0) {
+        result[key] = values.join(', ');
+      }
+    });
+    return result;
+  }, [grades]);
 
   const formatDate = (dateString) =>
     new Date(dateString).toLocaleDateString('ru-RU', {
@@ -115,17 +132,14 @@ function TeacherAttendanceSummary({ user, onLogout, theme, onToggleTheme }) {
                   <tr key={student.id}>
                     <td className="sticky-col">{student.fullName || student.last_name}</td>
                     {daysRange.map((date) => {
-                      const status = attendanceMap[`${student.id}-${date}`];
-                      const statusClass = STATUS_CLASS[status] || 'attendance-summary-empty';
+                      const gradeStr = gradesMap[`${student.id}-${date}`];
+                      // Для цветовой подсветки берем среднее значение или первую оценку
+                      const gradeValues = gradeStr ? gradeStr.split(', ').map(v => Number(v)).filter(v => !isNaN(v)) : [];
+                      const avgGrade = gradeValues.length > 0 ? gradeValues.reduce((a, b) => a + b, 0) / gradeValues.length : null;
+                      const gradeClass = getGradeClass(avgGrade);
                       return (
-                        <td key={date} className={statusClass}>
-                          {status === 'present'
-                            ? '✓'
-                            : status === 'absent'
-                            ? '✗'
-                            : status === 'late'
-                            ? '⏳'
-                            : ''}
+                        <td key={date} className={gradeClass}>
+                          {gradeStr || ''}
                         </td>
                       );
                     })}
@@ -140,5 +154,5 @@ function TeacherAttendanceSummary({ user, onLogout, theme, onToggleTheme }) {
   );
 }
 
-export default TeacherAttendanceSummary;
+export default TeacherLessonGradesSummary;
 

@@ -110,7 +110,7 @@ function TeacherDashboard({ user, onLogout, theme, onToggleTheme }) {
             {filteredSubmissions.map((sub) => (
               <div key={sub._id} className="submission-card">
                 <div className="submission-info">
-                  <p className="student-name">{sub.userId?.lastName || 'Неизвестный'}</p>
+                  <p className="student-name">{sub.userId?.fullName || sub.userId?.lastName || 'Неизвестный'}</p>
                   <h3>{sub.labName}</h3>
                   <a href={sub.mrLink} target="_blank" rel="noopener noreferrer" className="mr-link">
                     {sub.mrLink}

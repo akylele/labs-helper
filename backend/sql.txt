@@ -72,17 +72,39 @@ CREATE TABLE grades (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
   user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
   grade_type TEXT NOT NULL CHECK (grade_type IN ('lesson', 'exam')),
-  grade_value SMALLINT NOT NULL CHECK (grade_value BETWEEN 0 AND 100),
+  grade_value SMALLINT NOT NULL CHECK (grade_value BETWEEN 0 AND 10),
+  grade_index SMALLINT DEFAULT 1 CHECK (grade_index BETWEEN 1 AND 3),
   lesson_date DATE,
   exam_name TEXT,
   comment TEXT,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-  UNIQUE (user_id, lesson_date, grade_type),
+  UNIQUE (user_id, lesson_date, grade_type, grade_index),
   UNIQUE (user_id, exam_name, grade_type)
 );
 
 CREATE INDEX idx_grades_user_type ON grades (user_id, grade_type);
 CREATE INDEX idx_grades_exam_name ON grades (exam_name) WHERE grade_type = 'exam';
+
+-- Миграция для добавления поддержки нескольких оценок за занятие (до 3)
+-- Выполнить эти команды в Supabase SQL Editor:
+
+-- 1. Удалить старые UNIQUE constraints
+ALTER TABLE grades DROP CONSTRAINT IF EXISTS grades_user_id_lesson_date_grade_type_key;
+ALTER TABLE grades DROP CONSTRAINT IF EXISTS grades_user_id_exam_name_grade_type_key;
+
+-- 2. Добавить поле grade_index (по умолчанию 1 для существующих записей)
+ALTER TABLE grades ADD COLUMN IF NOT EXISTS grade_index SMALLINT DEFAULT 1;
+ALTER TABLE grades ADD CONSTRAINT grades_grade_index_check CHECK (grade_index BETWEEN 1 AND 3);
+
+-- 3. Обновить существующие записи, установив grade_index = 1
+UPDATE grades SET grade_index = 1 WHERE grade_index IS NULL;
+
+-- 4. Сделать grade_index NOT NULL
+ALTER TABLE grades ALTER COLUMN grade_index SET NOT NULL;
+
+-- 5. Создать новые UNIQUE constraints
+ALTER TABLE grades ADD CONSTRAINT grades_user_lesson_unique UNIQUE (user_id, lesson_date, grade_type, grade_index);
+ALTER TABLE grades ADD CONSTRAINT grades_user_exam_unique UNIQUE (user_id, exam_name, grade_type);
 
 -- Пример массового добавления студентов
 INSERT INTO users (last_name, password, role)
@@ -93,3 +115,12 @@ VALUES
 UPDATE users
 SET password = crypt('новыйПароль', gen_salt('bf', 10))
 WHERE last_name = 'Иванов' AND role = 'student';
+
+-- Добавить колонку first_name
+ALTER TABLE users ADD COLUMN IF NOT EXISTS first_name TEXT;
+
+-- Пример обновления имени и фамилии для студентов
+-- Замените 'Фамилия' и 'Имя' на реальные значения
+UPDATE users
+SET first_name = 'Имя'
+WHERE last_name = 'Фамилия' AND role = 'student';

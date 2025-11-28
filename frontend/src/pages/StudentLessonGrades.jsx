@@ -5,8 +5,11 @@ import LoaderOverlay from '../components/LoaderOverlay';
 
 const gradeClass = (value) => {
   if (value === null || value === undefined) return 'grade-badge-empty';
-  if (value >= 85) return 'grade-badge-high';
-  if (value >= 60) return 'grade-badge-mid';
+  // 6-10 - зеленый
+  if (value >= 6) return 'grade-badge-high';
+  // 4-5 - желтый
+  if (value >= 4) return 'grade-badge-mid';
+  // 1-3 - красный
   return 'grade-badge-low';
 };
 
@@ -22,7 +25,24 @@ function StudentLessonGrades({ user, onLogout, theme, onToggleTheme }) {
     setLoading(true);
     try {
       const res = await axios.get('/grades/my');
-      setGrades(res.data?.lessons || []);
+      const allLessons = res.data?.lessons || [];
+      // Группируем оценки по дате занятия
+      const groupedByDate = {};
+      allLessons.forEach((grade) => {
+        const date = grade.lesson_date;
+        if (!groupedByDate[date]) {
+          groupedByDate[date] = [];
+        }
+        groupedByDate[date].push(grade);
+      });
+      // Преобразуем в массив и сортируем по дате
+      const grouped = Object.entries(groupedByDate)
+        .map(([date, grades]) => ({
+          lesson_date: date,
+          grades: grades.sort((a, b) => (a.grade_index || 1) - (b.grade_index || 1))
+        }))
+        .sort((a, b) => new Date(b.lesson_date) - new Date(a.lesson_date));
+      setGrades(grouped);
     } catch (error) {
       console.error('Ошибка загрузки оценок:', error);
     } finally {
@@ -51,15 +71,23 @@ function StudentLessonGrades({ user, onLogout, theme, onToggleTheme }) {
           </div>
         ) : (
           <div className="grades-list">
-            {grades.map((grade) => (
-              <div key={grade.id} className="grade-card">
+            {grades.map((entry, idx) => (
+              <div key={entry.lesson_date || idx} className="grade-card">
                 <div>
-                  <p className="grade-date">{grade.lesson_date ? formatDate(grade.lesson_date) : '—'}</p>
-                  {grade.comment && <p className="grade-comment">{grade.comment}</p>}
+                  <p className="grade-date">{entry.lesson_date ? formatDate(entry.lesson_date) : '—'}</p>
+                  {entry.grades.some(g => g.comment) && (
+                    <p className="grade-comment">
+                      {entry.grades.filter(g => g.comment).map(g => g.comment).join('; ')}
+                    </p>
+                  )}
                 </div>
-                <span className={`grade-badge ${gradeClass(grade.grade_value)}`}>
-                  {grade.grade_value ?? '—'}
-                </span>
+                <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+                  {entry.grades.map((grade, gradeIdx) => (
+                    <span key={grade.id || gradeIdx} className={`grade-badge ${gradeClass(grade.grade_value)}`}>
+                      {grade.grade_value ?? '—'}
+                    </span>
+                  ))}
+                </div>
               </div>
             ))}
           </div>

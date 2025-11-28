@@ -3,10 +3,25 @@ const { auth, teacherOnly } = require('../middleware/auth');
 
 const router = express.Router();
 
-// Валидация GitLab MR ссылки
+// Вспомогательная функция для форматирования полного имени
+const formatFullName = (user) => {
+  if (user.first_name && user.last_name) {
+    return `${user.first_name} ${user.last_name}`;
+  }
+  return user.last_name || '';
+};
+
+// Валидация GitLab MR или GitHub PR ссылки
 const isValidMrLink = (url) => {
-  return /^https:\/\/gitlab\.com\/[\w\-\.\/]+\/-\/merge_requests\/\d+/.test(url) ||
-         /^https:\/\/gitlab\.[\w\-\.]+\/[\w\-\.\/]+\/-\/merge_requests\/\d+/.test(url);
+  // GitLab: https://gitlab.com/owner/repo/-/merge_requests/123
+  // или https://gitlab.example.com/owner/repo/-/merge_requests/123
+  const gitlabPattern = /^https:\/\/gitlab\.com\/[\w\-\.\/]+\/-\/merge_requests\/\d+/.test(url) ||
+                       /^https:\/\/gitlab\.[\w\-\.]+\/[\w\-\.\/]+\/-\/merge_requests\/\d+/.test(url);
+  
+  // GitHub: https://github.com/owner/repo/pull/123
+  const githubPattern = /^https:\/\/github\.com\/[\w\-\.\/]+\/pull\/\d+/.test(url);
+  
+  return gitlabPattern || githubPattern;
 };
 
 // ============ LABS (названия лабораторных) ============
@@ -138,7 +153,7 @@ router.post('/', auth, async (req, res) => {
     }
 
     if (!isValidMrLink(mrLink)) {
-      return res.status(400).json({ error: 'Некорректная ссылка на GitLab Merge Request' });
+      return res.status(400).json({ error: 'Некорректная ссылка. Используйте GitLab Merge Request или GitHub Pull Request' });
     }
 
     // Проверить что лаба существует
@@ -219,9 +234,9 @@ router.get('/all', auth, teacherOnly, async (req, res) => {
     if (userIds.length > 0) {
       const { data: users } = await supabase
         .from('users')
-        .select('id, last_name')
+        .select('id, last_name, first_name')
         .in('id', userIds);
-      usersMap = Object.fromEntries((users || []).map(u => [u.id, u.last_name]));
+      usersMap = Object.fromEntries((users || []).map(u => [u.id, formatFullName(u)]));
     }
 
     if (labIds.length > 0) {
@@ -240,7 +255,7 @@ router.get('/all', auth, teacherOnly, async (req, res) => {
       mrLink: s.mr_link,
       status: s.status,
       submittedAt: s.submitted_at,
-      userId: s.user_id ? { _id: s.user_id, lastName: usersMap[s.user_id] } : null
+      userId: s.user_id ? { _id: s.user_id, lastName: usersMap[s.user_id], fullName: usersMap[s.user_id] } : null
     })));
   } catch (error) {
     console.error(error);
@@ -256,7 +271,7 @@ router.get('/summary', auth, teacherOnly, async (req, res) => {
     // Получить всех студентов
     const { data: students } = await supabase
       .from('users')
-      .select('id, last_name')
+      .select('id, last_name, first_name')
       .eq('role', 'student')
       .order('last_name');
 
@@ -271,7 +286,11 @@ router.get('/summary', auth, teacherOnly, async (req, res) => {
       .from('submissions')
       .select('user_id, lab_id, status, mr_link');
 
-    res.json({ students, labs, submissions });
+    res.json({ 
+      students: students.map(s => ({ ...s, fullName: formatFullName(s) })), 
+      labs, 
+      submissions 
+    });
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'Ошибка сервера' });
@@ -335,14 +354,20 @@ router.patch('/:id/status', auth, teacherOnly, async (req, res) => {
     }
 
     // Получить имя пользователя
-    let userName = null;
+    let userData = null;
     if (submission.user_id) {
       const { data: user } = await supabase
         .from('users')
-        .select('last_name')
+        .select('last_name, first_name')
         .eq('id', submission.user_id)
         .single();
-      userName = user?.last_name;
+      if (user) {
+        userData = {
+          _id: submission.user_id,
+          lastName: user.last_name,
+          fullName: formatFullName(user)
+        };
+      }
     }
 
     res.json({
@@ -352,7 +377,7 @@ router.patch('/:id/status', auth, teacherOnly, async (req, res) => {
       mrLink: submission.mr_link,
       status: submission.status,
       submittedAt: submission.submitted_at,
-      userId: submission.user_id ? { _id: submission.user_id, lastName: userName } : null
+      userId: userData
     });
   } catch (error) {
     console.error(error);
