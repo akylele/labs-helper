@@ -1,12 +1,12 @@
 {
   "files": {
-    "main.css": "/labs-helper/static/css/main.08d5745c.css",
-    "main.js": "/labs-helper/static/js/main.345ec07a.js",
+    "main.css": "/labs-helper/static/css/main.87c2d7d3.css",
+    "main.js": "/labs-helper/static/js/main.1e1d3ac7.js",
     "static/js/206.af82273e.chunk.js": "/labs-helper/static/js/206.af82273e.chunk.js",
     "index.html": "/labs-helper/index.html"
   },
   "entrypoints": [
-    "static/css/main.08d5745c.css",
-    "static/js/main.345ec07a.js"
+    "static/css/main.87c2d7d3.css",
+    "static/js/main.1e1d3ac7.js"
   ]
 }
