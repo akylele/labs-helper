@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "/labs-helper/static/css/main.74790914.css",
-    "main.js": "/labs-helper/static/js/main.2ea55727.js",
+    "main.js": "/labs-helper/static/js/main.d5743ce3.js",
     "static/css/438.ea6d428e.chunk.css": "/labs-helper/static/css/438.ea6d428e.chunk.css",
     "static/js/438.1c1001a0.chunk.js": "/labs-helper/static/js/438.1c1001a0.chunk.js",
     "static/css/396.60a95da4.chunk.css": "/labs-helper/static/css/396.60a95da4.chunk.css",
@@ -15,6 +15,6 @@
   },
   "entrypoints": [
     "static/css/main.74790914.css",
-    "static/js/main.2ea55727.js"
+    "static/js/main.d5743ce3.js"
   ]
 }
